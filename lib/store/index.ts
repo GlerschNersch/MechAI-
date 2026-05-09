@@ -10,6 +10,18 @@ export interface DtcCode {
   cleared?: boolean;
 }
 
+export interface ReadinessMonitor {
+  name: string;
+  available: boolean;
+  complete: boolean;
+}
+
+export interface ReadinessData {
+  milOn: boolean;
+  dtcCount: number;
+  monitors: ReadinessMonitor[];
+}
+
 export interface LiveData {
   rpm: number | null;
   speed: number | null;
@@ -19,6 +31,7 @@ export interface LiveData {
   batteryVoltage: number | null;
   intakeTemp: number | null;
   engineLoad: number | null;
+  readiness?: ReadinessData | null;
 }
 
 export interface Vehicle {

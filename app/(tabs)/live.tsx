@@ -1,5 +1,5 @@
 import React, { useEffect, useRef } from 'react';
-import { View, Text, ScrollView, TouchableOpacity } from 'react-native';
+import { View, Text, ScrollView } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useAppStore } from '@/lib/store';
 import { obd2 } from '@/lib/obd2/connection';
@@ -33,7 +33,7 @@ export default function LiveDataScreen() {
     return () => {
       if (pollingRef.current) clearInterval(pollingRef.current);
     };
-  }, [connectionStatus, isDemoMode]);
+  }, [connectionStatus, isDemoMode, updateLiveData]);
 
   const isConnected = connectionStatus === 'connected';
 

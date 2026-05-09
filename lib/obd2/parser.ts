@@ -66,6 +66,54 @@ export function parseBatteryVoltage(response: string): number | null {
   return parseFloat(match[1]);
 }
 
+/** Emissions Readiness (0101) */
+export function parseReadiness(response: string): any {
+  const clean = response.replace(/\s/g, '').replace(/^4101/, '');
+  if (clean.length < 8) return null;
+
+  const A = hexToInt(clean.slice(0, 2));
+  const B = hexToInt(clean.slice(2, 4));
+  const C = hexToInt(clean.slice(4, 6));
+  const D = hexToInt(clean.slice(6, 8));
+
+  const milOn = (A & 0x80) !== 0;
+  const dtcCount = A & 0x7F;
+
+  // Simplified monitor mapping for common monitors
+  // B bits 0-2: Available, 4-6: Incomplete (for Spark ignition)
+  // C bits 0-7: Available, D bits 0-7: Incomplete
+  
+  const resultMonitors = [];
+  
+  const commonMonitors = [
+    { name: 'Misfire', availByte: B, availBit: 0, incByte: B, incBit: 4 },
+    { name: 'Fuel System', availByte: B, availBit: 1, incByte: B, incBit: 5 },
+    { name: 'Components', availByte: B, availBit: 2, incByte: B, incBit: 6 },
+    { name: 'Catalyst', availByte: C, availBit: 0, incByte: D, incBit: 0 },
+    { name: 'Heated Catalyst', availByte: C, availBit: 1, incByte: D, incBit: 1 },
+    { name: 'Evaporative System', availByte: C, availBit: 2, incByte: D, incBit: 2 },
+    { name: 'Secondary Air System', availByte: C, availBit: 3, incByte: D, incBit: 3 },
+    { name: 'A/C Refrigerant', availByte: C, availBit: 4, incByte: D, incBit: 4 },
+    { name: 'Oxygen Sensor', availByte: C, availBit: 5, incByte: D, incBit: 5 },
+    { name: 'Oxygen Sensor Heater', availByte: C, availBit: 6, incByte: D, incBit: 6 },
+    { name: 'EGR System', availByte: C, availBit: 7, incByte: D, incBit: 7 },
+  ];
+
+  for (const m of commonMonitors) {
+    const available = (m.availByte & (1 << m.availBit)) !== 0;
+    if (available) {
+      const incomplete = (m.incByte & (1 << m.incBit)) !== 0;
+      resultMonitors.push({
+        name: m.name,
+        available: true,
+        complete: !incomplete,
+      });
+    }
+  }
+
+  return { milOn, dtcCount, monitors: resultMonitors };
+}
+
 /**
  * Parse Mode 03 DTC response.
  * Response format: 43 XX YY XX YY ... (each pair is one code)
@@ -99,6 +147,7 @@ export function parseLiveDataResponse(pid: string, response: string): Partial<Li
     case '0104': return { engineLoad: parseEngineLoad(response) };
     case '010F': return { intakeTemp: parseIntakeTemp(response) };
     case '012F': return { fuelLevel: parseFuelLevel(response) };
+    case '0101': return { readiness: parseReadiness(response) };
     case 'ATRV': return { batteryVoltage: parseBatteryVoltage(response) };
     default:     return {};
   }

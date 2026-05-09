@@ -151,6 +151,18 @@ export default function DashboardScreen() {
             <Text className="text-white text-sm font-semibold">Live Data</Text>
           </TouchableOpacity>
         </View>
+
+        <View className="flex-row gap-3 mt-3">
+          <TouchableOpacity
+            onPress={() => router.push('/readiness')}
+            className="flex-1 bg-surface-raised rounded-2xl p-4 items-center"
+          >
+            <Text className="text-2xl mb-1">📋</Text>
+            <Text className="text-white text-sm font-semibold">Emissions</Text>
+          </TouchableOpacity>
+          <View className="flex-1" />
+          <View className="flex-1" />
+        </View>
       </ScrollView>
     </SafeAreaView>
   );

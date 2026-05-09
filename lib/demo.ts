@@ -41,6 +41,20 @@ export function activateDemoMode() {
     batteryVoltage: 13.8,
     intakeTemp: 24,
     engineLoad: 18,
+    readiness: {
+      milOn: true,
+      dtcCount: 3,
+      monitors: [
+        { name: 'Misfire', available: true, complete: true },
+        { name: 'Fuel System', available: true, complete: true },
+        { name: 'Components', available: true, complete: true },
+        { name: 'Catalyst', available: true, complete: false },
+        { name: 'Evaporative System', available: true, complete: true },
+        { name: 'Oxygen Sensor', available: true, complete: false },
+        { name: 'Oxygen Sensor Heater', available: true, complete: true },
+        { name: 'EGR System', available: true, complete: true },
+      ],
+    },
   });
 }
 

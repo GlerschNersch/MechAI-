@@ -21,6 +21,7 @@ export const AT_COMMANDS = {
   ENGINE_LOAD: '0104',          // Calculated engine load
   INTAKE_TEMP: '010F',          // Intake air temperature
   FUEL_LEVEL: '012F',           // Fuel tank level
+  MONITOR_STATUS: '0101',       // Monitor status since DTCs cleared (Emissions Readiness)
   BATTERY_VOLTAGE: 'ATRV',      // Battery voltage (ELM327 specific)
   O2_SENSOR_1: '0114',          // O2 sensor 1
   MAF_RATE: '0110',             // Mass air flow rate
